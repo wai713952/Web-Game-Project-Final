@@ -84,6 +84,10 @@ app.post('/regisDB', async (req,res) => {
             console.log("New record created successfullyone");
             return res.redirect('login.html');
         }
+        else
+        {
+            return res.redirect('register.html?error=3');
+        }
     }
     let i = 0;
     for(var count in result)
@@ -100,7 +104,7 @@ app.post('/regisDB', async (req,res) => {
        }
        else if(Inputusername===result[count].username||Inputuserp1 !==Inputuserp2)
        {
-        return res.redirect('register.html?error=1');
+        return res.redirect('register.html?error=3');
        }
        else
        {
@@ -127,7 +131,45 @@ app.get('/login', async (req,res) => {
 })
 
 
+app.post('/checkLogin',async (req,res) => {
+    let Inputusername = req.body.username;
+    let Inputpassword = req.body.password1;
+    let tablename ="userInfo";
+    let sql = `SELECT id, username, email ,password,img FROM ${tablename}`;
+    let result = await queryDB(sql);
+    result = Object.assign({},result);
+    var keys = Object.keys(result);
+    console.log(result);
+    console.log(keys.length);
+    let i = 0;
+    for(var count in result)
+    {
+        console.log(result[count].username);
+        console.log(result[count].password);
 
+        if(Inputusername===result[count].username && Inputpassword===result[count].password)
+       {
+        console.log("usercorrect");
+        res.cookie('username', result[count].username); //res.cookie('name', 'keroro',{maxAge: 10000},'path=/');
+        res.cookie('img',result[count].img);
+        return res.redirect('feed.html');
+       }
+       else if((Inputusername!==result[count].username || Inputpassword!==result[count].password)&& (i+1) ==keys.length)
+       {
+        return res.redirect('login.html?error=1');
+       }
+       else
+       {
+        i++;     
+       }
+
+    }
+    //console.log(result);
+    // ถ้าเช็คแล้ว username และ password ถูกต้อง
+    // return res.redirect('feed.html');
+    // ถ้าเช็คแล้ว username และ password ไม่ถูกต้อง
+    // return res.redirect('login.html?error=1')
+})
 
 
 
