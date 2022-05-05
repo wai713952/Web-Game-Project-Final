@@ -143,6 +143,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
   
   .main-agileinfo {
 	width: 35%;
+
 	margin: 3em auto;
 	background: rgba(0, 0, 0, 0.18);
 	background-size: cover;
@@ -362,6 +363,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
   
   /*-- //copyright --*/
   .wrapper {
+	height: 91%;
 	position: relative;
 	overflow: hidden;
   }
@@ -383,11 +385,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	height: 40px;
 	background-color: rgba(240, 255, 32, 0.432);
 	bottom: -160px;
-	-webkit-animation: square 20s infinite;
+	-webkit-animation: square 30s infinite;
 	-moz-animation: square 250s infinite;
-	-o-animation: square 20s infinite;
-	-ms-animation: square 20s infinite;
-	animation: square 20s infinite;
+	-o-animation: square 30s infinite;
+	-ms-animation: square 30s infinite;
+	animation: square 30s infinite;
 	-webkit-transition-timing-function: linear;
 	-moz-transition-timing-function: linear;
 	-o-transition-timing-function: linear;
@@ -526,11 +528,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	}
   
 	100% {
-	  -webkit-transform: translateY(-700px) rotate(600deg);
-	  -moz-transform: translateY(-700px) rotate(600deg);
-	  -o-transform: translateY(-700px) rotate(600deg);
+	  -webkit-transform: translateY(-100%) rotate(600deg);
+	  -moz-transform: translateY(-100%) rotate(600deg);
+	  -o-transform: translateY(-100%) rotate(600deg);
 	  -ms-transform: translateY(-700px) rotate(600deg);
-	  transform: translateY(-700px) rotate(600deg);
+	  transform: translateY(-1200px) rotate(600deg);
 	}
   }
   
