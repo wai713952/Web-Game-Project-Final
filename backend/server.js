@@ -149,10 +149,12 @@ app.post('/checkLogin',async (req,res) => {
 
         if(Inputusername===result[count].username && Inputpassword===result[count].password)
        {
+           
         console.log("usercorrect");
         res.cookie('username', result[count].username); //res.cookie('name', 'keroro',{maxAge: 10000},'path=/');
         res.cookie('img',result[count].img);
-        return res.redirect('feed.html');
+        res.cookie('score',0);
+        return res.redirect('game1.html');
        }
        else if((Inputusername!==result[count].username || Inputpassword!==result[count].password)&& (i+1) ==keys.length)
        {
@@ -169,6 +171,18 @@ app.post('/checkLogin',async (req,res) => {
     // return res.redirect('feed.html');
     // ถ้าเช็คแล้ว username และ password ไม่ถูกต้อง
     // return res.redirect('login.html?error=1')
+})
+
+app.post('/game1',async (req,res) => {
+    let object;
+    const outMsg =  req.body;
+    //object[manypost] = outMsg;
+    console.log(outMsg);
+    res.redirect('game1.html');
+    
+   
+     //console.log(typeof outMsg);
+    
 })
 
 
