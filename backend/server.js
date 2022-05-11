@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
     },
 
     filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        cb(null, file.fieldname + '-' + req.cookies.username + path.extname(file.originalname));
     }
   });
 
@@ -56,6 +56,48 @@ const queryDB = (sql) => {
                 resolve(result)
         })
     })
+}
+
+app.get('/logout', (req,res) => {
+    res.clearCookie('username');
+    res.clearCookie('img');
+    return res.redirect('login.html');
+})
+
+
+app.post('/profilepic', (req,res) => {
+    let upload = multer({ storage: storage, fileFilter: imageFilter }).single('avatar');
+    //console.log(req.file.filename);
+    upload(req, res, (err) => {
+
+        if (req.fileValidationError) {
+            return res.send(req.fileValidationError);
+        }
+        else if (!req.file) {
+            return res.send('Please select an image to upload');
+        }
+        else if (err instanceof multer.MulterError) {
+            return res.send(err);
+        }
+        else if (err) {
+            return res.send(err);
+        }
+        //console.log(req.file.filename);
+        res.cookie('img',req.file.filename);
+       
+        updateImg(req.cookies.username,req.file.filename);
+        //res.send('You uploaded this image filename: '+ req.file.filename);
+        return res.redirect('game-menu.html');
+    });
+  
+    
+})
+
+const updateImg = async (username, filen) => {
+    let tablename = "userInfo";
+    let sql = `UPDATE ${tablename} SET img = '${filen}' WHERE username = '${username}'`;
+     await queryDB(sql);
+    
 }
 
 app.post('/regisDB', async (req,res) => {
@@ -153,8 +195,8 @@ app.post('/checkLogin',async (req,res) => {
         console.log("usercorrect");
         res.cookie('username', result[count].username); //res.cookie('name', 'keroro',{maxAge: 10000},'path=/');
         res.cookie('img',result[count].img);
-        res.cookie('score',0);
-        return res.redirect('game1.html');
+        //res.cookie('score',0);
+        return res.redirect('game-menu.html');
        }
        else if((Inputusername!==result[count].username || Inputpassword!==result[count].password)&& (i+1) ==keys.length)
        {
@@ -174,6 +216,10 @@ app.post('/checkLogin',async (req,res) => {
 })
 
 app.post('/game1',async (req,res) => {
+    let tablename = "gamerec";
+    let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (id INT AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP, username VARCHAR(255),gamename VARCHAR(255),score VARCHAR(255) `;
+    let result = await queryDB(sql);
+   
     let object;
     const outMsg =  req.body;
     //object[manypost] = outMsg;
