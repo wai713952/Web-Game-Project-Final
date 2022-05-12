@@ -1,4 +1,5 @@
 const express = require('express');
+const moment = require('moment');
 const app = express();
 const fs = require('fs');
 const hostname = 'localhost';
@@ -61,6 +62,7 @@ const queryDB = (sql) => {
 app.get('/logout', (req,res) => {
     res.clearCookie('username');
     res.clearCookie('img');
+    res.clearCookie('accountPK');
     return res.redirect('login.html');
 })
 
@@ -101,9 +103,9 @@ const updateImg = async (username, filen) => {
 }
 
 app.post('/regisDB', async (req,res) => {
-    console.log(req.body.username);
-    console.log(req.body.email);
-    console.log(req.body.password1);
+    // console.log(req.body.username);
+    // console.log(req.body.email);
+    // console.log(req.body.password1);
     
     let sql = "CREATE TABLE IF NOT EXISTS userInfo (id INT AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP, username VARCHAR(255), email VARCHAR(100),password VARCHAR(100),img VARCHAR(100))";
     let result = await queryDB(sql);
@@ -134,8 +136,8 @@ app.post('/regisDB', async (req,res) => {
     let i = 0;
     for(var count in result)
     {
-        console.log(result[count].username);
-        console.log(result[count].password);
+        // console.log(result[count].username);
+        // console.log(result[count].password);
 
         if(((Inputusername!==result[count].username && Inputuserp1 ==Inputuserp2) && ((i+1) ==keys.length ))|| i ==keys.length)
        {
@@ -160,17 +162,7 @@ app.post('/regisDB', async (req,res) => {
 
 })
 
-app.get('/register', async (req,res) => {
-   
-    return res.redirect('register.html');
-    
-})
 
-app.get('/login', async (req,res) => {
-   
-    return res.redirect('login.html');
-    
-})
 
 
 app.post('/checkLogin',async (req,res) => {
@@ -183,16 +175,18 @@ app.post('/checkLogin',async (req,res) => {
     var keys = Object.keys(result);
     console.log(result);
     console.log(keys.length);
+    console.log(keys);
     let i = 0;
     for(var count in result)
     {
-        console.log(result[count].username);
-        console.log(result[count].password);
+        // console.log(result[count].username);
+        // console.log(result[count].password);
 
         if(Inputusername===result[count].username && Inputpassword===result[count].password)
        {
-           
+        
         console.log("usercorrect");
+        res.cookie('accountPK',result[count].id);
         res.cookie('username', result[count].username); //res.cookie('name', 'keroro',{maxAge: 10000},'path=/');
         res.cookie('img',result[count].img);
         //res.cookie('score',0);
@@ -216,21 +210,48 @@ app.post('/checkLogin',async (req,res) => {
 })
 
 app.post('/game1',async (req,res) => {
-    let tablename = "gamerec";
-    let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (id INT AUTO_INCREMENT PRIMARY KEY, reg_date TIMESTAMP, username VARCHAR(255),gamename VARCHAR(255),score VARCHAR(255) `;
-    let result = await queryDB(sql);
-   
-    let object;
     const outMsg =  req.body;
-    //object[manypost] = outMsg;
-    console.log(outMsg);
-    res.redirect('game1.html');
+    var mysqlTimestamp = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+    console.log(mysqlTimestamp);
+    let tablename = "gamerecord";
+    let gamename = "rustbucket"
+    let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
+    let result = await queryDB(sql);
+    tablename = "highgamerecord";
+    sql = `CREATE TABLE IF NOT EXISTS ${tablename} (highrec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
+    result = await queryDB(sql);
+    sql = `INSERT INTO gamerecord (gamename,gamescore,userID,timestamps) VALUES("${gamename}",${outMsg["score"]},${req.cookies.accountPK},'${mysqlTimestamp}');`;
+    result = await queryDB(sql);
+    sql = `SELECT * FROM gamerecord  where userID=${req.cookies.accountPK} and gamename ="${gamename}" order by gamescore desc ;`
+    result = await queryDB(sql);
+    console.log(typeof result);
+    let object;
     
-   
+    //object[manypost] = outMsg;
+    console.log(outMsg["score"]);
+    res.redirect('game1.html');
      //console.log(typeof outMsg);
+})
+
+
+
+app.get('/register', async (req,res) => {
+   
+    return res.redirect('register.html');
     
 })
 
+app.get('/login', async (req,res) => {
+   
+    return res.redirect('login.html');
+    
+})
+
+app.get('/basketball', async (req,res) => {
+   
+    return res.redirect('game1.html');
+    
+})
 
 
 app.listen(port, hostname, () => {
