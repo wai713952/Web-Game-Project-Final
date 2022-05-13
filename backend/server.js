@@ -300,6 +300,12 @@ app.get('/RPS', async (req,res) => {
     
 })
 
+app.get('/MENU', async (req,res) => {
+   
+    return res.redirect('game-menu.html');
+    
+})
+
 
 
 app.listen(port, hostname, () => {

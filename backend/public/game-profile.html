@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+
+    <script type="text/javascript" src="js/game-menu.js"></script>
     <title>GameWeb</title>
 </head>
 <body>
@@ -19,11 +21,19 @@
                     🧑 YOUR PROFILE 🧑
                 </div>
             </h4>
-
+            <div id="browsePic">
+                <div id="displayPic">
+                    <img src= "img/avatar.png" alt="">
+                </div>
+                <form action="/profilepic" method="post" id="formId" enctype="multipart/form-data">
+                    <input type="file" id="fileField" name="avatar" value="fileToUpload" placeholder="" 
+                    hidden>
+                </form>
+            </div>
             <h2>
                 <div class="link_content_block">
-                    [profile name] !
-                    <a href=""><img class = "image_menu_button_logout" src="web game picture/button logout.png"></a>
+                    <span id="username"></span> !
+                    <a href="/logout"><img class = "image_menu_button_logout" src="web game picture/button logout.png"></a>
                 </div>
             </h2>
 
@@ -43,9 +53,33 @@
                     score of created newest to oldest.
                 </p>
             </h3>
-
-            <div class="showcase_block">
                 
+            <div class="showcase_block">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-wrap">
+                            <table class="table">
+                              <thead class="thead-primary">
+                                <tr>
+                                  <th>RANKING</th>
+                                  <th>SCORE</th>
+                                  <th>Timestamp</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">1</th>
+                                  <td>Mark</td>
+                                  <td>markotto@email.com</td>
+                                </tr>
+                            
+                              </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
             </div>
             
         </div>
