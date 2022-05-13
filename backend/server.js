@@ -217,19 +217,54 @@ app.post('/game1',async (req,res) => {
     let gamename = "rustbucket"
     let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
     let result = await queryDB(sql);
-    tablename = "highgamerecord";
-    sql = `CREATE TABLE IF NOT EXISTS ${tablename} (highrec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
-    result = await queryDB(sql);
+  
     sql = `INSERT INTO gamerecord (gamename,gamescore,userID,timestamps) VALUES("${gamename}",${outMsg["score"]},${req.cookies.accountPK},'${mysqlTimestamp}');`;
     result = await queryDB(sql);
-    sql = `SELECT * FROM gamerecord  where userID=${req.cookies.accountPK} and gamename ="${gamename}" order by gamescore desc ;`
-    result = await queryDB(sql);
-    console.log(typeof result);
-    let object;
+  
+  
+ 
     
     //object[manypost] = outMsg;
     console.log(outMsg["score"]);
-    res.redirect('game1.html');
+    res.redirect('game/rustbucket/rustbucket.html');
+     //console.log(typeof outMsg);
+})
+
+app.post('/game2',async (req,res) => {
+    const outMsg =  req.body;
+    var mysqlTimestamp = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+    console.log(mysqlTimestamp);
+    let tablename = "gamerecord";
+    let gamename = "shinji"
+    let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
+    let result = await queryDB(sql);
+   
+    sql = `INSERT INTO gamerecord (gamename,gamescore,userID,timestamps) VALUES("${gamename}",${outMsg["score"]},${req.cookies.accountPK},'${mysqlTimestamp}');`;
+    result = await queryDB(sql);
+ 
+
+    
+    //object[manypost] = outMsg;
+    console.log(outMsg["score"]);
+    res.redirect('game/shinji/shinji.html');
+     //console.log(typeof outMsg);
+})
+
+app.post('/game3',async (req,res) => {
+    const outMsg =  req.body;
+    var mysqlTimestamp = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+    console.log(mysqlTimestamp);
+    let tablename = "gamerecord";
+    let gamename = "RPS"
+    let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
+    let result = await queryDB(sql);
+    sql = `INSERT INTO gamerecord (gamename,gamescore,userID,timestamps) VALUES("${gamename}",${outMsg["score"]},${req.cookies.accountPK},'${mysqlTimestamp}');`;
+    result = await queryDB(sql);
+ 
+
+    //object[manypost] = outMsg;
+    console.log(outMsg["score"]);
+    res.redirect('game/shinji/shinji.html');
      //console.log(typeof outMsg);
 })
 
@@ -249,9 +284,22 @@ app.get('/login', async (req,res) => {
 
 app.get('/basketball', async (req,res) => {
    
-    return res.redirect('game1.html');
+    return res.redirect('game/rustbucket/rustbucket.html');
     
 })
+
+app.get('/shinji', async (req,res) => {
+   
+    return res.redirect('game/shinji/shinji.html');
+    
+})
+
+app.get('/RPS', async (req,res) => {
+   
+    return res.redirect('game/RPS/RPS.html');
+    
+})
+
 
 
 app.listen(port, hostname, () => {

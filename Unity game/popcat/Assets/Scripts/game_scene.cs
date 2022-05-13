@@ -4,12 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Runtime.InteropServices;
+
 
 public class game_scene : MonoBehaviour
 {
     public float score;
     public bool canPop;
-
+    
+    [DllImport("__Internal")]
+    public static extern void PassNumberParam(float score);
+    
     public Image popImage;
     public Sprite normalPic;
     public Sprite popPic;
@@ -19,7 +24,7 @@ public class game_scene : MonoBehaviour
     public GameObject blackPanel;
     public GameObject startButton;
     public GameObject stopButton;
-
+    
     void Start()
     {
         popImage.GetComponent<Image>();
@@ -59,10 +64,10 @@ public class game_scene : MonoBehaviour
         blackPanel.SetActive(true);
         startButton.SetActive(true);
         stopButton.SetActive(false);
-
+        PassNumberParam(score);
         //send var to web
-
-        score = 0;
+        score = 0;  
         scoreText.text = "Congratulation: 0";
     }
+    
 }
