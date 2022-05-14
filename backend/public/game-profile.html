@@ -5,8 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
-
-    <script type="text/javascript" src="js/game-menu.js"></script>
+    <script type="text/javascript" src="js/profile.js"></script>
     <title>GameWeb</title>
 </head>
 <body>
@@ -55,24 +54,37 @@
             </h3>
                 
             <div class="showcase_block">
+                <form method="post" action="/sendSelectTable">
+                    <select name="gamename" id="gamename">
+                        <option value="rustbucket">Rustbucket</option>
+                        <option value="shinji">Shinji</option>
+                        <option value="RPS">RPS</option>
+                    </select>
+                    <select name="sortType" id="sortType">
+                        <option value="ranking">ranking</option>
+                        <option value="gamescore">score</option>
+                        <option value="timestamps">date</option>
+                    </select>
+                    <select name="sortby" id="sortby">
+                        <option value="asc">ascending</option>
+                        <option value="desc">descending </option>
+                    </select>
+                    <input type="submit" value="Submit">
+                </form>
+                
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-wrap">
-                            <table class="table">
+                            <table class="table" >
                               <thead class="thead-primary">
                                 <tr>
                                   <th>RANKING</th>
                                   <th>SCORE</th>
-                                  <th>Timestamp</th>
+                                  <th>DATE</th>
                                 </tr>
                               </thead>
-                              <tbody>
-                                <tr>
-                                  <th scope="row">1</th>
-                                  <td>Mark</td>
-                                  <td>markotto@email.com</td>
-                                </tr>
-                            
+                              <tbody id ="tables">
+                        
                               </tbody>
                             </table>
                         </div>

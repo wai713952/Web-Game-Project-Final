@@ -117,8 +117,8 @@ app.post('/regisDB', async (req,res) => {
     result = await queryDB(sql);
     result = Object.assign({},result);
     var keys = Object.keys(result);
-    console.log(result);
-    console.log(keys.length);
+    // console.log(result);
+    // console.log(keys.length);
     if(keys.length==0)
     {
         if(Inputuserp1 ==Inputuserp2)
@@ -173,9 +173,7 @@ app.post('/checkLogin',async (req,res) => {
     let result = await queryDB(sql);
     result = Object.assign({},result);
     var keys = Object.keys(result);
-    console.log(result);
-    console.log(keys.length);
-    console.log(keys);
+    
     let i = 0;
     for(var count in result)
     {
@@ -233,7 +231,7 @@ app.post('/game1',async (req,res) => {
 app.post('/game2',async (req,res) => {
     const outMsg =  req.body;
     var mysqlTimestamp = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
-    console.log(mysqlTimestamp);
+   
     let tablename = "gamerecord";
     let gamename = "shinji"
     let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
@@ -253,7 +251,7 @@ app.post('/game2',async (req,res) => {
 app.post('/game3',async (req,res) => {
     const outMsg =  req.body;
     var mysqlTimestamp = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
-    console.log(mysqlTimestamp);
+    
     let tablename = "gamerecord";
     let gamename = "RPS"
     let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
@@ -305,6 +303,60 @@ app.get('/MENU', async (req,res) => {
     return res.redirect('game-menu.html');
     
 })
+
+app.get('/readtableprofile', async (req,res) => {
+    // let sortbyType = await req.body.sortType;
+    // let sortby = await req.body.sortby;
+    // let gamename = await req.body.gamename;
+    // let sql;
+    // console.log(sortbyType);
+    // console.log(gamename);
+    sql = `SELECT @rownum := @rownum + 1 AS ranking,gamename,gamescore,cast(timestamps as char) as timestamps FROM gamerecord 
+    inner join userinfo u on u.id = gamerecord.userID
+    ,(select @rownum := 0) r
+     where userID=${req.cookies.accountPK} and gamename ="rustbucket"
+    order by gamescore desc;`;
+
+  /*  else
+    {
+        sql = `SELECT @rownum := @rownum + 1 AS ranking,gamename,gamescore,cast(timestamps as char) as timestamps FROM gamerecord 
+    inner join userinfo u on u.id = gamerecord.userID
+    ,(select @rownum := 0) r
+     where userID=${req.cookies.accountPK} and gamename ="${gamename}"
+    order by ${sortbyType} ${sortby};`;
+    }*/
+  
+    let result = await queryDB(sql);
+    result = Object.assign({},result);
+    var keys = Object.keys(result);
+    console.log(result);
+    console.log(typeof result);
+    console.log(keys);
+    res.json(result);
+    res.end;
+    
+})
+
+app.post('/sendSelectTable', async(req,res)=>{
+    let sortbyType = await req.body.sortType;
+    let sortby = await req.body.sortby;
+    let gamename = await req.body.gamename;
+   
+    let sql = `SELECT @rownum := @rownum + 1 AS ranking,gamename,gamescore,cast(timestamps as char) as timestamps FROM gamerecord 
+    inner join userinfo u on u.id = gamerecord.userID
+    ,(select @rownum := 0) r
+     where userID=${req.cookies.accountPK} and gamename ="${gamename}"
+    order by ${sortbyType} ${sortby};`;
+    let result = await queryDB(sql);
+    result = Object.assign({},result);
+  //  res.json(result);
+   
+ //   res.end(result);
+ //res.setHeader('Content-Type', 'application/json');
+ res.end(JSON.stringify(result));
+}
+) 
+
 
 
 
