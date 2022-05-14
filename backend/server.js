@@ -338,22 +338,28 @@ app.get('/readtableprofile', async (req,res) => {
 })
 
 app.post('/sendSelectTable', async(req,res)=>{
-    let sortbyType = await req.body.sortType;
+    
+  /*  let sortbyType = await req.body.sortType;
     let sortby = await req.body.sortby;
-    let gamename = await req.body.gamename;
-   
+    let gamename = await req.body.gamename;*/
+     //console.log(req.body);
+     const obj = req.body;
+     console.log(obj["gamenames"]);
     let sql = `SELECT @rownum := @rownum + 1 AS ranking,gamename,gamescore,cast(timestamps as char) as timestamps FROM gamerecord 
     inner join userinfo u on u.id = gamerecord.userID
     ,(select @rownum := 0) r
-     where userID=${req.cookies.accountPK} and gamename ="${gamename}"
-    order by ${sortbyType} ${sortby};`;
+     where userID=${req.cookies.accountPK} and gamename ="${obj["gamenames"]}"
+    order by ${obj["sortTypes"]} ${obj["sortBys"]};`;
     let result = await queryDB(sql);
     result = Object.assign({},result);
-  //  res.json(result);
+    console.log(typeof result);
+    res.json(result);
+    res.end;
+    //res.render('game-profile.html',result);
    
  //   res.end(result);
  //res.setHeader('Content-Type', 'application/json');
- res.end(JSON.stringify(result));
+
 }
 ) 
 

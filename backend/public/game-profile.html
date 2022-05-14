@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
     <script type="text/javascript" src="js/profile.js"></script>
+    
     <title>GameWeb</title>
 </head>
 <body>
@@ -54,7 +55,7 @@
             </h3>
                 
             <div class="showcase_block">
-                <form method="post" action="/sendSelectTable">
+                
                     <select name="gamename" id="gamename">
                         <option value="rustbucket">Rustbucket</option>
                         <option value="shinji">Shinji</option>
@@ -65,12 +66,12 @@
                         <option value="gamescore">score</option>
                         <option value="timestamps">date</option>
                     </select>
-                    <select name="sortby" id="sortby">
+                    <select name="sortby" id="sortbygas">
                         <option value="asc">ascending</option>
                         <option value="desc">descending </option>
                     </select>
-                    <input type="submit" value="Submit">
-                </form>
+                   <button id="requesttablebutt"> click me</button>
+               
                 
                 <div class="row">
                     <div class="col-md-12">

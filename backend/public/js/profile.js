@@ -1,5 +1,6 @@
 var objcompare ;
 var newobj;
+var table,gamename,sortType,sortBy,button,sortTypegas,gamenamest,sortbye;
 // check ว่ามีการ set cookies หรือยังถ้ามีจะไปยัง feed.html แต่ถ้าไม่มีจะกลับไปที่ login.html
 var jsonpost;
 function checkCookie(){
@@ -23,9 +24,14 @@ function getCookie(name){
 }
 
 function pageLoad(){
-	var table = document.getElementById("tables");
-	setInterval(readtableinput,1000);
+	table = document.getElementById("tables");
+	 document.getElementById("requesttablebutt").onclick = onclickgas;
+	 gamename = document.getElementById("gamename");
+	sortType =  document.getElementById("sortType");
+	sortbyes = document.getElementById("sortbygas");
+	//setInterval(readtableinput,1000);
     readtable();
+   
 	document.getElementById('displayPic').onclick = fileUpload;
 	document.getElementById('fileField').onchange = fileSubmit;
 	var username = getCookie('username');
@@ -33,9 +39,36 @@ function pageLoad(){
 	showImg('img/'+getCookie('img'));
 	
 }
+// console.log(gamenamest);
 
+function onclickgas (){
+	 sortTypegas = sortType.value;
+	gamenamest = gamename.value;
+	 sortbye1 = sortbyes.value;
+	 console.log(gamenamest);
+	 console.log(sortTypegas);
+	 console.log(sortbye1);
+	
+	readtable();
+}
 async function readtable(){
-	let response = await fetch("/readtableprofile");
+	sortTypegas = sortType.value;
+	gamenamest = gamename.value;
+	 sortbye1 = sortbyes.value;
+let response = await fetch("/sendSelectTable",
+	{
+		method: "POST",
+		headers: {
+			'accept': 'application/json',
+			'Content-Type' : 'application/json'
+		},
+		body : JSON.stringify({
+			gamenames : gamenamest ,
+			sortTypes : sortTypegas,
+			sortBys   : sortbye1
+		})
+	}
+	);
 	let content = await response.json();
 	//console.log(content);
 	/*if(typeof content !== "Object")
@@ -53,24 +86,31 @@ async function readtable(){
 	
 }
 
-async function readtableinput(){
-	let response = await fetch("/sendSelectTable");
-	let content = await response.json();
-	//console.log(content);
-	/*if(typeof content !== "Object")
-	{
-		jsonpost = JSON.parse(content);
-	}
-	else
-	{
-		jsonpost = content;
-	}*/
+// async function readtableinput(){
+// 	let response = await fetch("/sendSelectTable",
+// 	{
+// 		method: "GET",
+// 		headers: {
+// 			'accept': 'application/json',
+// 			'Content-Type' : 'application/json'
+// 		}
+// 	});
+// 	let content = await response.json();
+// 	//console.log(content);
+// 	/*if(typeof content !== "Object")
+// 	{
+// 		jsonpost = JSON.parse(content);
+// 	}
+// 	else
+// 	{
+// 		jsonpost = content;
+// 	}*/
 	
-	showtable(content);
-	const { status } = response; 
-    return status;
+// 	showtable(content);
+// 	const { status } = response; 
+//     return status;
 	
-}
+// }
 
 
 function showtable(data){
