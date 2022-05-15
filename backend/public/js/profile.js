@@ -37,7 +37,20 @@ function pageLoad(){
 	var username = getCookie('username');
 	document.getElementById("username").innerHTML = username;
 	showImg('img/'+getCookie('img'));
-	
+
+	const tbody =document.getElementById('tables');
+	console.log(tbody);
+	if(tbody)
+	{
+		tbody.addEventListener('click', function (e) {
+			const cell = e.target.closest('td');
+			if (!cell) {return;} // Quit, not clicked on a cell
+			const row = cell.parentElement;
+			console.log(cell.innerHTML, row.rowIndex, cell.cellIndex);
+		  });
+			  
+	}
+ 
 }
 // console.log(gamenamest);
 
@@ -113,13 +126,14 @@ let response = await fetch("/sendSelectTable",
 // }
 
 
-function showtable(data){
-    
+function showtable(data)
+{
+   
 	var keys = Object.keys(data);
 	var table = document.getElementById("tables");
 	table.innerHTML = "";
 	for (var i = keys.length-1; i >=0 ; i--) {
-
+		document.getElementById("displaygamename").innerHTML = data[keys[i]]["gamename"] + " scoreboard";;
 	var row = table.insertRow(0);
     var cell1 = row.insertCell(0);
     var cell2 = row.insertCell(1);
@@ -130,6 +144,8 @@ function showtable(data){
     cell3.innerHTML = data[keys[i]]["timestamps"];
 	}
 }
+
+
 
 
 function fileUpload(){
