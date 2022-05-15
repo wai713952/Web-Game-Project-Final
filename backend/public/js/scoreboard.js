@@ -47,6 +47,9 @@ function pageLoad(){
 			if (!cell) {return;} // Quit, not clicked on a cell
 			const row = cell.parentElement;
 			console.log(cell.innerHTML, row.rowIndex, cell.cellIndex);
+			console.log(row.children[1].innerHTML);
+			commentsection(row.children[1].innerHTML,gamename.value);
+			
 		  });
 			  
 	}
@@ -81,6 +84,8 @@ let response = await fetch("/sendhighSelectTable",
 	}
 	);
 	let content = await response.json();
+	
+	
 	//console.log(content);
 	/*if(typeof content !== "Object")
 	{
@@ -96,6 +101,28 @@ let response = await fetch("/sendhighSelectTable",
     return status;
 	
 }
+
+async function commentsection(username ,gamename){
+	let response = await fetch("/commentsection",
+	{
+		method: "POST",
+		headers: {
+			'accept': 'application/json',
+			'Content-Type' : 'application/json'
+		},
+		body : JSON.stringify({
+			usergamerec : username ,
+			gamename : gamename,
+		})
+	}
+	);
+	window.location.href = "http://localhost:3000/MENU"
+	const { status } = response; 
+	
+    return status;
+
+}
+
 
 
 
@@ -113,11 +140,21 @@ function showtable(data)
     var cell2 = row.insertCell(1);
     var cell3 = row.insertCell(2);
 	var cell4 = row.insertCell(3);
+	var cell5 = row.insertCell(4);
    
 	cell1.innerHTML = ""+x;
     cell2.innerHTML = data[keys[i]]["username"];
     cell3.innerHTML = data[keys[i]]["gamescore"];
 	cell4.innerHTML = data[keys[i]]["timestamps"];
+	if(data[keys[i]]["likecount"]==null)
+	{
+		
+		cell5.innerHTML = "0";
+	}
+	else
+	{
+		cell5.innerHTML = data[keys[i]]["likecount"];
+	}
 	x--;
 	}
 }

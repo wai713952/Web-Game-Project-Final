@@ -304,6 +304,18 @@ app.get('/MENU', async (req,res) => {
     
 })
 
+app.get('/MENU', async (req,res) => {
+   
+    return res.redirect('game-menu.html');
+    
+})
+
+app.get('/commentpage', async (req,res) => {
+   
+    return res.redirect('game-menu.html');
+    
+})
+
 app.get('/readtableprofile', async (req,res) => {
     // let sortbyType = await req.body.sortType;
     // let sortby = await req.body.sortby;
@@ -366,7 +378,9 @@ app.post('/sendSelectTable', async(req,res)=>{
 app.post('/sendhighSelectTable', async(req,res)=>{
   
        const obj = req.body;
+      
        console.log(obj["gamenames"]);
+     
        let sql = `CREATE TABLE IF NOT EXISTS commenting (
         comment_id INT AUTO_INCREMENT PRIMARY KEY,
         txt VARCHAR(255),
@@ -387,12 +401,12 @@ app.post('/sendhighSelectTable', async(req,res)=>{
              );`
         ;
         result = await queryDB(sql);
-        sql = `SELECT o.rec_id, @rownum := @rownum + 1 AS ranking , username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename
-        FROM \`gamerecord\` o                                
+        sql = `SELECT o.rec_id,  username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename ,  l.likecount
+        FROM \`gamerecord\` o   
+        inner join userinfo u on u.id =o.userID
+        left join( select usergamerec ,gamenamerec, COUNT(*)as likecount from liketable group by usergamerec ,gamenamerec   )l on l.usergamerec = o.userID and l.gamenamerec = o.gamename                             
           LEFT JOIN \`gamerecord\` b                           
            ON o.userID = b.userID and o.gamename = b.gamename AND o.gamescore < b.gamescore
-            inner join userinfo u on u.id =o.userID
-         ,(select @rownum := 0) r
         WHERE b.gamescore is NULL    and o.gamename ="${obj["gamenames"]}"
         order by ${obj["sortTypes"]} ${obj["sortBys"]}                           
          ;`;
@@ -401,10 +415,32 @@ app.post('/sendhighSelectTable', async(req,res)=>{
       console.log(typeof result);
       res.json(result);
       res.end;
-  
+     
   
   }
   ) 
+
+  app.post('/commentsection', async(req,res)=>{
+      console.log(req.body);
+    
+    const obj = req.body;
+    console.log(obj["gamename"]);
+     res.cookie('commentuser',obj["usergamerec"]);
+     res.cookie('gamename',obj["gamename"]);
+     res.redirect('/MENU');
+     res.end;
+  
+    // if(obj["usergamerec"]== null)
+    // {
+    //      console.log(obj["usergamerec"]);
+    // }
+    // else
+    // {
+        
+    // }
+   
+}
+) 
 
 
 
