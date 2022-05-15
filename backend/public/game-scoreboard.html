@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+    <script type="text/javascript" src="js/scoreboard.js"></script>
     <title>GameWeb</title>
 </head>
 <body>
@@ -19,11 +20,19 @@
                     💯 SCOREBOARD 💯
                 </div>
             </h4>
-
+            <div id="browsePic">
+                <div id="displayPic">
+                    <img src= "img/avatar.png" alt="">
+                </div>
+                <form action="/profilepic" method="post" id="formId" enctype="multipart/form-data">
+                    <input type="file" id="fileField" name="avatar" value="fileToUpload" placeholder="" 
+                    hidden>
+                </form>
+            </div>
             <h2>
                 <div class="link_content_block">
-                    [profile name] !
-                    <a href=""><img class = "image_menu_button_logout" src="web game picture/button logout.png"></a>
+                    <span id="username"></span> !!
+                    <a href="/logout"><img class = "image_menu_button_logout" src="web game picture/button logout.png"></a>
                 </div>
             </h2>
 
@@ -46,7 +55,48 @@
             </h3>
 
             <div class="showcase_block">
+                <h3 id="displaygamename">
                 
+                </h3> <br>
+
+                    <select name="gamename" id="gamename">
+                        <option value="rustbucket">Rustbucket</option>
+                        <option value="shinji">Shinji</option>
+                        <option value="RPS">RPS</option>
+                    </select>
+                    <select name="sortType" id="sortType">
+                        <option value="gamescore">score</option>
+                        <option value="username">name</option>
+                        <option value="timestamps">date</option>
+                    </select>
+                    <select name="sortby" id="sortbygas">
+                        <option value="desc">descending </option>
+                        <option value="asc">ascending</option> 
+                    </select>
+                   <button id="requesttablebutt"> click me</button>
+               
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-wrap">
+                            <table class="table" >
+                              <thead class="thead-primary">
+                                <tr>
+                                  <th>RANKING</th>
+                                  <th>name</th>
+                                  <th>SCORE</th>
+                                  <th>DATE</th>
+                                  <th>Likes</th>
+                                  <th>Comment</th>
+                                </tr>
+                              </thead>
+                              <tbody id ="tables">
+                        
+                              </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             
         </div>

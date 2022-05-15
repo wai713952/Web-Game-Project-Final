@@ -58,7 +58,7 @@ function onclickgas (){
 	 sortTypegas = sortType.value;
 	gamenamest = gamename.value;
 	 sortbye1 = sortbyes.value;
-
+	
 	
 	readtable();
 }
@@ -66,7 +66,7 @@ async function readtable(){
 	sortTypegas = sortType.value;
 	gamenamest = gamename.value;
 	 sortbye1 = sortbyes.value;
-let response = await fetch("/sendSelectTable",
+let response = await fetch("/sendhighSelectTable",
 	{
 		method: "POST",
 		headers: {
@@ -97,31 +97,6 @@ let response = await fetch("/sendSelectTable",
 	
 }
 
-// async function readtableinput(){
-// 	let response = await fetch("/sendSelectTable",
-// 	{
-// 		method: "GET",
-// 		headers: {
-// 			'accept': 'application/json',
-// 			'Content-Type' : 'application/json'
-// 		}
-// 	});
-// 	let content = await response.json();
-// 	//console.log(content);
-// 	/*if(typeof content !== "Object")
-// 	{
-// 		jsonpost = JSON.parse(content);
-// 	}
-// 	else
-// 	{
-// 		jsonpost = content;
-// 	}*/
-	
-// 	showtable(content);
-// 	const { status } = response; 
-//     return status;
-	
-// }
 
 
 function showtable(data)
@@ -137,10 +112,12 @@ function showtable(data)
     var cell1 = row.insertCell(0);
     var cell2 = row.insertCell(1);
     var cell3 = row.insertCell(2);
+	var cell4 = row.insertCell(3);
    
-    cell1.innerHTML = ""+x;
-    cell2.innerHTML = data[keys[i]]["gamescore"];
-    cell3.innerHTML = data[keys[i]]["timestamps"];
+	cell1.innerHTML = ""+x;
+    cell2.innerHTML = data[keys[i]]["username"];
+    cell3.innerHTML = data[keys[i]]["gamescore"];
+	cell4.innerHTML = data[keys[i]]["timestamps"];
 	x--;
 	}
 }

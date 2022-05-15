@@ -344,7 +344,7 @@ app.post('/sendSelectTable', async(req,res)=>{
     let gamename = await req.body.gamename;*/
      //console.log(req.body);
      const obj = req.body;
-     console.log(obj["gamenames"]);
+    //  console.log(obj["gamenames"]);
     let sql = `SELECT @rownum := @rownum + 1 AS ranking,gamename,gamescore,cast(timestamps as char) as timestamps FROM gamerecord 
     inner join userinfo u on u.id = gamerecord.userID
     ,(select @rownum := 0) r
@@ -352,7 +352,7 @@ app.post('/sendSelectTable', async(req,res)=>{
     order by ${obj["sortTypes"]} ${obj["sortBys"]};`;
     let result = await queryDB(sql);
     result = Object.assign({},result);
-    console.log(typeof result);
+    // console.log(typeof result);
     res.json(result);
     res.end;
     //res.render('game-profile.html',result);
@@ -362,6 +362,49 @@ app.post('/sendSelectTable', async(req,res)=>{
 
 }
 ) 
+
+app.post('/sendhighSelectTable', async(req,res)=>{
+  
+       const obj = req.body;
+       console.log(obj["gamenames"]);
+       let sql = `CREATE TABLE IF NOT EXISTS commenting (
+        comment_id INT AUTO_INCREMENT PRIMARY KEY,
+        txt VARCHAR(255),
+        timestamps timestamp,
+        userID int,
+        usergamerec int,
+        FOREIGN KEY (userID) REFERENCES userinfo(id),
+        FOREIGN KEY (usergamerec) REFERENCES gamerecord(userID)) ;` ;
+       let result = await queryDB(sql);
+
+        sql = `CREATE TABLE IF NOT EXISTS liketable (
+            like_id INT AUTO_INCREMENT PRIMARY KEY,
+            userID int,
+            gamenamerec varchar(255),
+            usergamerec int ,
+            FOREIGN KEY (userID) REFERENCES userinfo(id),
+            FOREIGN KEY (usergamerec) REFERENCES gamerecord(userID)
+             );`
+        ;
+        result = await queryDB(sql);
+        sql = `SELECT o.rec_id, @rownum := @rownum + 1 AS ranking , username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename
+        FROM \`gamerecord\` o                                
+          LEFT JOIN \`gamerecord\` b                           
+           ON o.userID = b.userID and o.gamename = b.gamename AND o.gamescore < b.gamescore
+            inner join userinfo u on u.id =o.userID
+         ,(select @rownum := 0) r
+        WHERE b.gamescore is NULL    and o.gamename ="${obj["gamenames"]}"
+        order by ${obj["sortTypes"]} ${obj["sortBys"]}                           
+         ;`;
+      result = await queryDB(sql);
+      result = Object.assign({},result);
+      console.log(typeof result);
+      res.json(result);
+      res.end;
+  
+  
+  }
+  ) 
 
 
 
