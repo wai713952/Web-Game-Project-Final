@@ -207,7 +207,7 @@ app.post('/checkLogin',async (req,res) => {
         console.log("usercorrect");
         res.cookie('accountPK',result[count].id);
         res.cookie('username', result[count].username); //res.cookie('name', 'keroro',{maxAge: 10000},'path=/');
-        res.cookie('img',result[count].img);
+        res.cookie('img',result[count].img); 
         //res.cookie('score',0);
         return res.redirect('game-menu.html');
        }
@@ -337,17 +337,28 @@ app.get('/commentpage', async (req,res) => {
     
 })
 
-app.post('/requestcomment', async (req,res) => {
-    console.log(req.body);
+app.get('/requestcomment', async (req,res) => {
+   // console.log(req.body);
   let sql1 = `select usergamerec ,gamenamerec, COUNT(*) from liketable where usergamerec=${req.cookies.commentuser} and gamenamerec="${req.cookies.gamename}" group by usergamerec ,gamenamerec ;`;
-  let sql2 = ` select * from commenting where usergamerec=${req.cookies.commentuser} and gamenamerec="${req.cookies.gamename}" ;`;
+  let sql2 = ` select c.*,cast(timestamps as char) as timestampchar,u.img ,u.username as commentUname,u2.username from commenting c
+  inner join userinfo u on u.ID = c.usergamerec
+  inner join userinfo u2 on u2.ID = c.userID
+  where gamenamerec = "${req.cookies.gamename}" and usergamerec=${req.cookies.commentuser}
+  order by timestamps desc; `;
     let result = await doublequeryDB(sql1,sql2);
     result = Object.assign({},result);
-    console.log(result);
+  //  console.log(result);
     res.json(result);
     res.end;
-   
-    
+})
+
+app.post('/writecomment',async (req,res) => { 
+    console.log(req.body);
+    let mysqlTimestamp = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+    let sql ;
+    // sql = `INSERT INTO postDB (username, postmes) VALUES ("${req.body.user}","${req.body.message}")`;
+    sql = `INSERT INTO commenting (txt,timestamps,userID,gamenamerec,usergamerec) VALUES(\"${req.body.message}\",'${mysqlTimestamp}',${req.cookies.accountPK},\"${req.cookies.gamename}\",${req.cookies.commentuser});`;
+    result = await queryDB(sql);
 })
 
 app.get('/readtableprofile', async (req,res) => {
@@ -436,10 +447,11 @@ app.post('/sendhighSelectTable', async(req,res)=>{
              );`
         ;
         result = await queryDB(sql);
-        sql = `SELECT o.rec_id,  username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename ,  l.likecount ,ID
+        sql = `SELECT o.rec_id,  username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename ,  l.likecount ,ID,l2.comments
         FROM \`gamerecord\` o   
         inner join userinfo u on u.id =o.userID
-        left join( select usergamerec ,gamenamerec, COUNT(*)as likecount from liketable group by usergamerec ,gamenamerec   )l on l.usergamerec = o.userID and l.gamenamerec = o.gamename                             
+        left join( select usergamerec ,gamenamerec, COUNT(*)as likecount from liketable group by usergamerec ,gamenamerec   )l on l.usergamerec = o.userID and l.gamenamerec = o.gamename       
+        left join(select usergamerec,gamenamerec,count(*)as comments from commenting group by usergamerec,gamenamerec   )l2 on l2.usergamerec = o.userID and l2.gamenamerec = o.gamename                      
           LEFT JOIN \`gamerecord\` b                           
            ON o.userID = b.userID and o.gamename = b.gamename AND o.gamescore < b.gamescore
         WHERE b.gamescore is NULL    and o.gamename ="${obj["gamenames"]}"
@@ -462,6 +474,10 @@ app.post('/sendhighSelectTable', async(req,res)=>{
     console.log(obj["gamename"]);
      res.cookie('commentuser',obj["usergamerec"]);
      res.cookie('gamename',obj["gamename"]);
+     res.cookie('gamescore',obj["gamescore"]);
+     res.cookie('scoreDATE',obj["date"]);
+     res.cookie('commentN',obj["commentN"]); 
+     res.cookie('usergamerecchar',obj["usergamerecchar"]); 
      res.send({redirect: '/commentpage'});
      res.end;
   

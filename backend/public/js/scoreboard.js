@@ -52,7 +52,14 @@ function pageLoad(){
 			for(var x in newobj)
 			{
 				if(row.children[1].innerHTML==newobj[x]["username"]){
-					commentsection(newobj[x]["ID"],gamename.value);
+					if(newobj[x]["comments"]==null){
+						commentsection(newobj[x]["ID"],gamename.value,newobj[x]["gamescore"],newobj[x]["timestamps"],0,newobj[x]["username"]);
+					}
+					else
+					{
+						commentsection(newobj[x]["ID"],gamename.value,newobj[x]["gamescore"],newobj[x]["timestamps"],newobj[x]["comments"],newobj[x]["username"]);
+					}
+				
 				}
 
 				console.log(newobj[x]["username"]+newobj[x]["ID"]);
@@ -110,7 +117,7 @@ let response = await fetch("/sendhighSelectTable",
 	
 }
 
-async function commentsection(username ,gamename){
+async function commentsection(username ,gamename,gamescore,date,commentN,usernamechar){
 	let response = await fetch("/frontendleadboardname",
 	{
 		method: "POST",
@@ -121,6 +128,10 @@ async function commentsection(username ,gamename){
 		body : JSON.stringify({
 			usergamerec : username ,
 			gamename : gamename,
+			gamescore : gamescore,
+			date : date,
+			commentN : commentN,
+			usergamerecchar : usernamechar
 		})
 	}
 	);
@@ -150,6 +161,7 @@ function showtable(data)
     var cell3 = row.insertCell(2);
 	var cell4 = row.insertCell(3);
 	var cell5 = row.insertCell(4);
+	var cell6 = row.insertCell(5);
    
 	cell1.innerHTML = ""+x;
     cell2.innerHTML = data[keys[i]]["username"];
@@ -163,6 +175,15 @@ function showtable(data)
 	else
 	{
 		cell5.innerHTML = data[keys[i]]["likecount"];
+	}
+	if(data[keys[i]]["comments"]==null)
+	{
+		
+		cell6.innerHTML = "0";
+	}
+	else
+	{
+		cell6.innerHTML = data[keys[i]]["comments"];
 	}
 	x--;
 	}
