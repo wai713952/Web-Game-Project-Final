@@ -48,7 +48,15 @@ function pageLoad(){
 			const row = cell.parentElement;
 			console.log(cell.innerHTML, row.rowIndex, cell.cellIndex);
 			console.log(row.children[1].innerHTML);
-			commentsection(row.children[1].innerHTML,gamename.value);
+			//
+			for(var x in newobj)
+			{
+				if(row.children[1].innerHTML==newobj[x]["username"]){
+					commentsection(newobj[x]["ID"],gamename.value);
+				}
+
+				console.log(newobj[x]["username"]+newobj[x]["ID"]);
+			}
 			
 		  });
 			  
@@ -103,7 +111,7 @@ let response = await fetch("/sendhighSelectTable",
 }
 
 async function commentsection(username ,gamename){
-	let response = await fetch("/commentsection",
+	let response = await fetch("/frontendleadboardname",
 	{
 		method: "POST",
 		headers: {
@@ -116,7 +124,8 @@ async function commentsection(username ,gamename){
 		})
 	}
 	);
-	window.location.href = "http://localhost:3000/MENU"
+	let content = await response.json();
+	window.location= content.redirect;
 	const { status } = response; 
 	
     return status;

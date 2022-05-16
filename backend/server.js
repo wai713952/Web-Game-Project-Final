@@ -35,6 +35,7 @@ const imageFilter = (req, file, cb) => {
 };
 
 const con = mysql.createConnection({
+    multipleStatements: true,
     host: "localhost",
     user: "root",
     password: "poomwar444",
@@ -52,6 +53,26 @@ const queryDB = (sql) => {
     return new Promise((resolve,reject) => {
         // query method
         con.query(sql, (err,result, fields) => {
+            if (err) reject(err);
+            else
+                resolve(result)
+        })
+    })
+}
+
+const doublequeryDB = (sql1,sql2) => {
+    if(sql1==null)
+    {
+        sql1 = ""
+    }
+    if(sql2==null)
+    {
+        sql2 = ""
+    }
+  
+    return new Promise((resolve,reject) => {
+        // query method
+        con.query(sql1+sql2,[1,2],(err,result, fields) => {
             if (err) reject(err);
             else
                 resolve(result)
@@ -311,8 +332,21 @@ app.get('/MENU', async (req,res) => {
 })
 
 app.get('/commentpage', async (req,res) => {
+ 
+    return res.redirect('commentINDEX.html');
+    
+})
+
+app.post('/requestcomment', async (req,res) => {
+    console.log(req.body);
+  let sql1 = `select usergamerec ,gamenamerec, COUNT(*) from liketable where usergamerec=${req.cookies.commentuser} and gamenamerec="${req.cookies.gamename}" group by usergamerec ,gamenamerec ;`;
+  let sql2 = ` select * from commenting where usergamerec=${req.cookies.commentuser} and gamenamerec="${req.cookies.gamename}" ;`;
+    let result = await doublequeryDB(sql1,sql2);
+    result = Object.assign({},result);
+    console.log(result);
+    res.json(result);
+    res.end;
    
-    return res.redirect('game-menu.html');
     
 })
 
@@ -386,6 +420,7 @@ app.post('/sendhighSelectTable', async(req,res)=>{
         txt VARCHAR(255),
         timestamps timestamp,
         userID int,
+        gamenamerec varchar(255),
         usergamerec int,
         FOREIGN KEY (userID) REFERENCES userinfo(id),
         FOREIGN KEY (usergamerec) REFERENCES gamerecord(userID)) ;` ;
@@ -401,7 +436,7 @@ app.post('/sendhighSelectTable', async(req,res)=>{
              );`
         ;
         result = await queryDB(sql);
-        sql = `SELECT o.rec_id,  username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename ,  l.likecount
+        sql = `SELECT o.rec_id,  username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename ,  l.likecount ,ID
         FROM \`gamerecord\` o   
         inner join userinfo u on u.id =o.userID
         left join( select usergamerec ,gamenamerec, COUNT(*)as likecount from liketable group by usergamerec ,gamenamerec   )l on l.usergamerec = o.userID and l.gamenamerec = o.gamename                             
@@ -420,25 +455,38 @@ app.post('/sendhighSelectTable', async(req,res)=>{
   }
   ) 
 
-  app.post('/commentsection', async(req,res)=>{
+  app.post('/frontendleadboardname', async(req,res)=>{
       console.log(req.body);
-    
+    let sql = 'select ID,username from userinfo;';
     const obj = req.body;
     console.log(obj["gamename"]);
      res.cookie('commentuser',obj["usergamerec"]);
      res.cookie('gamename',obj["gamename"]);
-     res.redirect('/MENU');
+     res.send({redirect: '/commentpage'});
      res.end;
   
-    // if(obj["usergamerec"]== null)
-    // {
-    //      console.log(obj["usergamerec"]);
-    // }
-    // else
-    // {
-        
-    // }
+ 
    
+}
+) 
+
+
+app.post('/comment', async(req,res)=>{
+    console.log(req.body);
+  let sql3 = `select ID,username from userinfo;`;
+  let sql1 = '';
+  let sql2 = '';
+    let result = await doublequeryDB(sql3);
+    console.log(result);
+  // if(obj["usergamerec"]== null)
+  // {
+  //      console.log(obj["usergamerec"]);
+  // }
+  // else
+  // {
+      
+  // }
+ 
 }
 ) 
 
