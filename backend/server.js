@@ -234,7 +234,7 @@ app.post('/game1',async (req,res) => {
     console.log(mysqlTimestamp);
     let tablename = "gamerecord";
     let gamename = "rustbucket"
-    let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
+    let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,timestamps timestamp,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
     let result = await queryDB(sql);
   
     sql = `INSERT INTO gamerecord (gamename,gamescore,userID,timestamps) VALUES("${gamename}",${outMsg["score"]},${req.cookies.accountPK},'${mysqlTimestamp}');`;
@@ -255,7 +255,7 @@ app.post('/game2',async (req,res) => {
    
     let tablename = "gamerecord";
     let gamename = "shinji"
-    let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
+    let sql = `CREATE TABLE IF NOT EXISTS ${tablename} (rec_id INT AUTO_INCREMENT PRIMARY KEY,gamename VARCHAR(255),gamescore int, userID int,timestamps timestamp,FOREIGN KEY (userID) REFERENCES userInfo(id)) `;
     let result = await queryDB(sql);
    
     sql = `INSERT INTO gamerecord (gamename,gamescore,userID,timestamps) VALUES("${gamename}",${outMsg["score"]},${req.cookies.accountPK},'${mysqlTimestamp}');`;
