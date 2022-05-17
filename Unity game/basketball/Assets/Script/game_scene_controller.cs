@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Runtime.InteropServices;
 
 public class game_scene_controller : MonoBehaviour
 {
+    [DllImport("__Internal")]
+    public static extern void PassNumberParam(float score);
 
     public TMP_Text hpText;
     public TMP_Text scoreText;
@@ -69,6 +72,7 @@ public class game_scene_controller : MonoBehaviour
         score++;
         hpText.text = "HP: " + HP.ToString();
         scoreText.text = "Score: " + score.ToString();
+      
     }
 
     public void OnTriggerEnter(Collider ball) //miss shooting
@@ -84,6 +88,7 @@ public class game_scene_controller : MonoBehaviour
                 loseText.SetActive(true);
                 UIBlocker.SetActive(true);
                 Invoke("QuitButton", 3f);
+                PassNumberParam(score);
                 return;
             }
             HP -= 30;

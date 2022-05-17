@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Runtime.InteropServices;
 
 public class game_scene_controller : MonoBehaviour
 {
+    [DllImport("__Internal")]
+    public static extern void PassNumberParam(float score);
     string[] answerChoice = new string[] { "Rock", "Paper", "Scissors" };
     string question;
     string answer;
@@ -107,6 +110,7 @@ public class game_scene_controller : MonoBehaviour
 
     public void QuitButton()
     {
+        PassNumberParam(score);
         SceneManager.LoadScene("menu");
     }
 }
