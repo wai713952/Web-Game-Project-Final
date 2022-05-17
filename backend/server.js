@@ -470,7 +470,7 @@ app.post('/sendhighSelectTable', async(req,res)=>{
              );`
         ;
         result = await queryDB(sql);
-        sql = `SELECT o.rec_id,  username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename ,  l.likecount ,ID,l2.comments
+        sql = `SELECT o.rec_id,  username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename ,  l.likecount ,ID,l2.comments,u.img
         FROM \`gamerecord\` o   
         inner join userinfo u on u.id =o.userID
         left join( SELECT usergamerec,gamenamerec ,count(*) as likecount from (select usergamerec ,gamenamerec,userID  from \`liketable\` group by usergamerec ,gamenamerec ,userID) AS DerivedTableAlias )l on l.usergamerec = o.userID and l.gamenamerec = o.gamename       
@@ -482,7 +482,7 @@ app.post('/sendhighSelectTable', async(req,res)=>{
          ;`;
       result = await queryDB(sql);
       result = Object.assign({},result);
-      console.log(typeof result);
+     // console.log(typeof result);
       res.json(result);
       res.end;
      
@@ -501,6 +501,7 @@ app.post('/sendhighSelectTable', async(req,res)=>{
      res.cookie('scoreDATE',obj["date"]);
      res.cookie('commentN',obj["commentN"]); 
      res.cookie('usergamerecchar',obj["usergamerecchar"]); 
+     res.cookie('usergamerecIMG',obj["IMG"]); 
      res.send({redirect: '/commentpage'});
      res.end;
   
@@ -511,12 +512,12 @@ app.post('/sendhighSelectTable', async(req,res)=>{
 
 
 app.post('/comment', async(req,res)=>{
-    console.log(req.body);
+    //console.log(req.body);
   let sql3 = `select ID,username from userinfo;`;
   let sql1 = '';
   let sql2 = '';
     let result = await doublequeryDB(sql3);
-    console.log(result);
+   // console.log(result);
   // if(obj["usergamerec"]== null)
   // {
   //      console.log(obj["usergamerec"]);

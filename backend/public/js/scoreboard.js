@@ -46,23 +46,27 @@ function pageLoad(){
 			const cell = e.target.closest('td');
 			if (!cell) {return;} // Quit, not clicked on a cell
 			const row = cell.parentElement;
-			console.log(cell.innerHTML, row.rowIndex, cell.cellIndex);
-			console.log(row.children[1].innerHTML);
+			// console.log(cell.innerHTML, row.rowIndex, cell.cellIndex);
+			// console.log(row.children[1].innerHTML);
 			//
 			for(var x in newobj)
 			{
 				if(row.children[1].innerHTML==newobj[x]["username"]){
-					if(newobj[x]["comments"]==null){
-						commentsection(newobj[x]["ID"],gamename.value,newobj[x]["gamescore"],newobj[x]["timestamps"],0,newobj[x]["username"]);
+					
+					if(newobj[x]["comments"]===null){
+					//	commentsection(newobj[x]["ID"],gamename.value,newobj[x]["gamescore"],newobj[x]["timestamps"],0,newobj[x]["username"]);
+					newobj[x]["comments"] = 0 ;
+					
 					}
-					else
-					{
-						commentsection(newobj[x]["ID"],gamename.value,newobj[x]["gamescore"],newobj[x]["timestamps"],newobj[x]["comments"],newobj[x]["username"]);
-					}
-				
+					
+					
+					//	console.log(newobj[x]);
+						commentsection(newobj[x]["ID"],gamename.value,newobj[x]["gamescore"],newobj[x]["timestamps"],newobj[x]["comments"],newobj[x]["username"],newobj[x]["img"]);
+					
+					//console.log(row.children[1].innerHTML);
 				}
-
-				console.log(newobj[x]["username"]+newobj[x]["ID"]);
+				
+			//	console.log(newobj[x]["username"]+newobj[x]["ID"]);
 			}
 			
 		  });
@@ -117,7 +121,7 @@ let response = await fetch("/sendhighSelectTable",
 	
 }
 
-async function commentsection(username ,gamename,gamescore,date,commentN,usernamechar){
+async function commentsection(username ,gamename,gamescore,date,commentN,usernamechar,IMGs){
 	let response = await fetch("/frontendleadboardname",
 	{
 		method: "POST",
@@ -131,7 +135,8 @@ async function commentsection(username ,gamename,gamescore,date,commentN,usernam
 			gamescore : gamescore,
 			date : date,
 			commentN : commentN,
-			usergamerecchar : usernamechar
+			usergamerecchar : usernamechar,
+			IMG : IMGs
 		})
 	}
 	);
@@ -167,6 +172,7 @@ function showtable(data)
     cell2.innerHTML = data[keys[i]]["username"];
     cell3.innerHTML = data[keys[i]]["gamescore"];
 	cell4.innerHTML = data[keys[i]]["timestamps"];
+	
 	if(data[keys[i]]["likecount"]==null)
 	{
 		

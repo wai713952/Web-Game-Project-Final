@@ -37,7 +37,7 @@ function pageLoad(){
 	timer = setInterval (readPost, 300);
 	getlikes();
 
-	
+	document.getElementById('MVPplayerPIC').src = 'img/'+getCookie('usergamerecIMG');
     showImg('img/'+getCookie('img'));
 	document.getElementById('postbutton').onclick = getData;
 }
@@ -170,8 +170,8 @@ function showPost(data){
 		temp1.className = "d-flex flex-row align-items-center commented-user";
 		temp1.innerHTML +=   '<span>'+data[keys[i]]["txt"]+'</span>';
 		temp.appendChild(temp1);
-		imgname = data[keys[i]]["img"];
-		document.getElementById('MVPplayerPIC').src = 'img/'+imgname;
+		//imgname = data[keys[i]]["img"];
+	
 		//console.log(keys[i]);
 	}
 }
