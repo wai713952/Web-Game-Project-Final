@@ -339,7 +339,7 @@ app.get('/commentpage', async (req,res) => {
 
 app.get('/requestcomment', async (req,res) => {
    // console.log(req.body);
-  let sql1 = `select usergamerec ,gamenamerec, COUNT(*) from liketable where usergamerec=${req.cookies.commentuser} and gamenamerec="${req.cookies.gamename}" group by usergamerec ,gamenamerec ;`;
+  let sql1 = `select * from liketable where usergamerec=${req.cookies.commentuser} and gamenamerec="${req.cookies.gamename}" group by userID,usergamerec,gamenamerec ;`;
   let sql2 = ` select c.*,cast(timestamps as char) as timestampchar,u.img ,u.username as commentUname,u2.username from commenting c
   inner join userinfo u on u.ID = c.usergamerec
   inner join userinfo u2 on u2.ID = c.userID
@@ -350,6 +350,29 @@ app.get('/requestcomment', async (req,res) => {
   //  console.log(result);
     res.json(result);
     res.end;
+})
+
+app.post('/likecomment', async (req,res)=>{
+    let sql ,result;
+    const obj = req.body;
+   // console.log(obj);
+    if(obj["like"]=="like")
+    {
+        sql = `INSERT INTO liketable
+        (userID, gamenamerec, usergamerec)
+      VALUES
+        (${req.cookies.accountPK}, "${req.cookies.gamename}", ${req.cookies.commentuser})
+      ON DUPLICATE KEY UPDATE
+        userID     = VALUES(userID),
+        usergamerec = VALUES(usergamerec);`;
+        result = await queryDB(sql);
+    }
+    else if(obj["like"]=="dislike")
+    {
+        sql = `delete from liketable where userID = ${req.cookies.accountPK} and gamenamerec="${req.cookies.gamename}" and usergamerec=${req.cookies.commentuser} ;`;
+        result = await queryDB(sql);
+    }
+
 })
 
 app.post('/writecomment',async (req,res) => { 
@@ -450,7 +473,7 @@ app.post('/sendhighSelectTable', async(req,res)=>{
         sql = `SELECT o.rec_id,  username,o.gamescore,cast(o.timestamps as char) as timestamps , o.gamename ,  l.likecount ,ID,l2.comments
         FROM \`gamerecord\` o   
         inner join userinfo u on u.id =o.userID
-        left join( select usergamerec ,gamenamerec, COUNT(*)as likecount from liketable group by usergamerec ,gamenamerec   )l on l.usergamerec = o.userID and l.gamenamerec = o.gamename       
+        left join( SELECT usergamerec,gamenamerec ,count(*) as likecount from (select usergamerec ,gamenamerec,userID  from \`liketable\` group by usergamerec ,gamenamerec ,userID) AS DerivedTableAlias )l on l.usergamerec = o.userID and l.gamenamerec = o.gamename       
         left join(select usergamerec,gamenamerec,count(*)as comments from commenting group by usergamerec,gamenamerec   )l2 on l2.usergamerec = o.userID and l2.gamenamerec = o.gamename                      
           LEFT JOIN \`gamerecord\` b                           
            ON o.userID = b.userID and o.gamename = b.gamename AND o.gamescore < b.gamescore

@@ -22,6 +22,7 @@ function getCookie(name){
 
 function pageLoad(){
 	readPost();
+	
 	var ownername = document.getElementById("TropicName") ;
 	var ownerINFO = document.getElementById("TropicINFO") ; 
 	ownerINFO.innerHTML = "";
@@ -34,11 +35,68 @@ function pageLoad(){
 	var timedecpde = unescape(getCookie('scoreDATE'));
 	ownerINFO.innerHTML += '<span>'+timedecpde+'</span>';
 	timer = setInterval (readPost, 300);
+	getlikes();
 
 	
     showImg('img/'+getCookie('img'));
 	document.getElementById('postbutton').onclick = getData;
 }
+
+async function getlikes()
+{
+	let likeobj = await readPost();
+	//if(likeobj.length)
+	//console.log(Object.keys(likeobj[0]).length);
+	document.getElementById("likesvar").innerHTML = Object.keys(likeobj[0]).length;
+	document.getElementById("likebutt").onclick = likes;
+	document.getElementById("dislikebutt").onclick = dislikes; 
+
+}
+
+async function likes()
+{
+	let response = await fetch("/likecomment",
+	{
+		method: "POST",
+		headers: {
+			'accept': 'application/json',
+			'Content-Type' : 'application/json'
+		},
+		body : JSON.stringify({
+			like : "like"
+		})
+	}
+	);
+	
+	
+
+
+	const { status } = response; 
+    return status;
+	
+	
+}	
+
+async function dislikes()
+{
+	let response = await fetch("/likecomment",
+	{
+		method: "POST",
+		headers: {
+			'accept': 'application/json',
+			'Content-Type' : 'application/json'
+		},
+		body : JSON.stringify({
+			like : "dislike"
+		})
+	}
+	);
+	
+
+	const { status } = response; 
+    return status;
+	
+}	
 
 
 function getData(){
@@ -51,11 +109,11 @@ async function readPost(){
 	let response = await fetch("/requestcomment");
 	let content = await response.json();
 	//console.log();
-	jsonobj = content[1];
 	
+	document.getElementById("likesvar").innerHTML = Object.keys(content[0]).length;	
 	showPost(content[1]);
-	const { status } = response; 
-    return status;
+	
+    return content;
 }
 
 
@@ -74,15 +132,7 @@ let response = await fetch("/writecomment",
 		})
 	}
 	);
-	//console.log(content);
-	/*if(typeof content !== "Object")
-	{
-		jsonpost = JSON.parse(content);
-	}
-	else
-	{
-		jsonpost = content;
-	}*/
+	
 	const { status } = response; 
     return status;
 	
