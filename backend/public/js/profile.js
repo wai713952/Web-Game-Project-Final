@@ -29,6 +29,7 @@ function pageLoad(){
 	 gamename = document.getElementById("gamename");
 	sortType =  document.getElementById("sortType");
 	sortbyes = document.getElementById("sortbygas");
+	document.getElementById("displaygamename").innerHTML = gamename.value + " scoreboard";
 	//setInterval(readtableinput,1000);
     readtable();
    
@@ -55,6 +56,7 @@ function pageLoad(){
 // console.log(gamenamest);
 
 function onclickgas (){
+	document.getElementById("displaygamename").innerHTML = gamename.value + " scoreboard";;
 	 sortTypegas = sortType.value;
 	gamenamest = gamename.value;
 	 sortbye1 = sortbyes.value;
@@ -132,7 +134,7 @@ function showtable(data)
 	table.innerHTML = "";
 	var x = keys.length;
 	for (var i = keys.length-1; i >=0 ; i--) {
-		document.getElementById("displaygamename").innerHTML = data[keys[i]]["gamename"] + " scoreboard";;
+	
 	var row = table.insertRow(0);
     var cell1 = row.insertCell(0);
     var cell2 = row.insertCell(1);

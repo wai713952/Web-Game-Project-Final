@@ -37,8 +37,8 @@ const imageFilter = (req, file, cb) => {
 const con = mysql.createConnection({
     multipleStatements: true,
     host: "localhost",
-    user: "root",
-    password: "poomwar444",
+    user: "poomwar",
+    password: "1234",
     database: "finalwebgame"
 })
 
@@ -319,15 +319,18 @@ app.get('/RPS', async (req,res) => {
     
 })
 
+
+
 app.get('/MENU', async (req,res) => {
    
     return res.redirect('game-menu.html');
     
 })
 
-app.get('/MENU', async (req,res) => {
+
+app.get('/Highscore', async (req,res) => {
    
-    return res.redirect('game-menu.html');
+    return res.redirect('game-scoreboard.html');
     
 })
 
