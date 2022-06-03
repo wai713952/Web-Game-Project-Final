@@ -30,7 +30,7 @@ function pageLoad(){
 	ownername.innerHTML += '<h5>HIGH SCORE RECORD : '+getCookie('gamescore')+'</h5>' ;
 	ownername.innerHTML += '<span class="ml-2">('+getCookie('usergamerecchar')+')</span>' ;
 	ownerINFO.innerHTML += '<span class="bdge mr-1">'+getCookie('gamename')+'</span>';
-	ownerINFO.innerHTML += '<span class="mr-2 comments">'+getCookie('commentN')+ ' comments&nbsp;</span>';
+	ownerINFO.innerHTML += '<span class="mr-2 comments" id="Ncomment">'+getCookie('commentN')+ ' comments&nbsp;</span>';
 	ownerINFO.innerHTML += '<span class="mr-2 dot"></span>';
 	var timedecpde = unescape(getCookie('scoreDATE'));
 	ownerINFO.innerHTML += '<span>'+timedecpde+'</span>';
@@ -150,10 +150,14 @@ function showImg(filename){
 }
 
 
-function showPost(data){
+async function showPost(data){
+	var commentN = await document.getElementById("Ncomment");
+	
 	var keys = Object.keys(data);
 	var divTag = document.getElementById("feed-container");	
 	divTag.innerHTML = "";
+	//console.log(commentN);
+	commentN.innerHTML = '<span class="mr-2 comments">'+ keys.length+ ' comments&nbsp;</span>';
 	for (var i = keys.length-1; i >=0 ; i--) {
 
 		var temp = document.createElement("div");

@@ -30,6 +30,11 @@ public class game_scene_controller : MonoBehaviour
 
     public void Start()
     {
+        setactiveUI();
+    }
+
+    public void setactiveUI()
+    {
         hpText.GetComponent<TMP_Text>();
         scoreText.GetComponent<TMP_Text>();
         hpText.text = "";
@@ -43,12 +48,20 @@ public class game_scene_controller : MonoBehaviour
 
     public void ThrowBall()
     {
-        GameObject ballTemp;
-        ballTemp = Instantiate(ballPrefab, ballSpawnPoint.position, ballSpawnPoint.rotation);
-        ballTemp.GetComponent<Rigidbody>().AddForce(Vector3.forward * ballForce);
+        addforcePushball(ballPrefab);
         UIBlocker.SetActive(true);
         Invoke("DisableBlocker", 0.2f);
+       
     }
+
+    public void addforcePushball(GameObject gameObject)
+    {
+        GameObject balltemp;
+        balltemp = Instantiate(gameObject, ballSpawnPoint.position, ballSpawnPoint.rotation);
+        balltemp.GetComponent<Rigidbody>().AddForce(Vector3.forward * ballForce);
+        
+    }
+    
     public void DisableBlocker()
     {
         UIBlocker.SetActive(false);
@@ -88,7 +101,7 @@ public class game_scene_controller : MonoBehaviour
                 loseText.SetActive(true);
                 UIBlocker.SetActive(true);
                 Invoke("QuitButton", 3f);
-                PassNumberParam(score);
+            //    PassNumberParam(score);
                 return;
             }
             HP -= 30;
